@@ -7,7 +7,7 @@
     <script type="text/javascript" language="JavaScript">
         // Здесь можно менять конфигурационные параметры
         var _scaleDown = true; //Уменьшать модель, если окно меньше
-        var _fullscreen = window.matchMedia("(min-device-width:2000px)").matches;  //Увеличивать модель, если окно больше
+        var _fullscreen = false;  //Отключаем полный экран
         var _allVisible = false; //Видна целиком вся модель
         var _modelWidth = 1004; //Ширина модели в пикселях
         var _modelHeight = 650; //Высота модели в пикселях
@@ -51,12 +51,12 @@
 
         (function(){
             //turn off scaling as per MK7.0
-            var flagFixedScale = false;
+            var flagFixedScale = true; // Включаем фиксированный масштаб
             var flagScaleDown;
             var flagFullScreen;
             var flagAllVisible;
 
-            var fixedRatio = 100;  //default fixed scale for MK7.0
+            var fixedRatio = 75;  // Фиксированный масштаб 75% по умолчанию
             var scaleButtonRightShift = 0;
             var initialIframeWidth;
             var initialIframeHeight;
@@ -482,26 +482,26 @@
         sup	{
             font-size: 10px;	}
         iframe {
-            width: 1004px;
-            height: 650px;
+            width: 753px; /* 1004 * 0.75 = 753 */
+            height: 488px; /* 650 * 0.75 = 488 */
             margin: 5px; }
         .caption	{
             font-family: verdana,arial;
-            font-size: 24px;
+            font-size: 18px; /* 24 * 0.75 = 18 */
             line-height: 1.2em;
             color: #701e22;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 14px;
+            margin-top: 11px; /* 14 * 0.75 = 11 */
             margin-bottom: 0px;
-            width: 1004px; }
+            width: 753px; /* 1004 * 0.75 = 753 */ }
         .problem {
             margin-top: 0;
             margin-right: auto;
             margin-left: auto;
             margin-bottom: 0;
             white-space: normal;
-            width: 1004px; }
+            width: 753px; /* 1004 * 0.75 = 753 */ }
         .div-wrapper {
             padding: 0;
             margin: 0;
@@ -599,7 +599,7 @@
         }
         #methodsLink{
             display: none;
-            width: 1004px;
+            width: 753px; /* 1004 * 0.75 = 753 */
         }
         #progressGif{
             visibility: visible;
