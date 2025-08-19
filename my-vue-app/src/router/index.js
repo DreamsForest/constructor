@@ -1,16 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HelloWorld from '@/components/HelloWorld.vue'
+import main from '@/components/main.vue'
+import test from '@/components/TestOne.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: HelloWorld
+    name: 'home',
+    redirect: '/main' // Перенаправление с корня на /main
   },
   {
-    path: '/hello',
-    name: 'HelloWorld',
-    component: HelloWorld
+    path: '/main',
+    name: 'main',
+    component: main
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: test
   }
 ]
 
