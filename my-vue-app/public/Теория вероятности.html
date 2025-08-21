@@ -2,6 +2,7 @@
 <html>
 <head>
     <META http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Модель МК</title>
     <link type="text/css" rel="stylesheet" href="./files/mathkit_scripts/style.css"></link>
     <script type="text/javascript" language="JavaScript">
@@ -355,7 +356,7 @@
                     if(modelIframe != null){
                         totalHeight = modelIframe.getBoundingClientRect().bottom+modelTotalMargin.bottom+methodsLinkHeight*ratio;
                         if(aDiv.length>0 && aDiv[0] != null)
-                            totalHeight -= aDiv[0].getBoundingClientRect().top-parseInt(window.getComputedStyle(aDiv[0]).marginTop);
+                            totalHeight -= aDiv[0].getBoundingClientRect().top-parseInt(window.getComputedStyle(aDiv[0].parentElement).marginTop);
                     }
 
                     var flagScroller = totalHeight>window.innerHeight;
@@ -461,6 +462,11 @@
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" onerror="initResizing(_modelWidth, _modelHeight, _scaleDown, _fullscreen, _allVisible)"></script>	
 	<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] }});MathJax.Hub.Queue(["initResizing",window , window._modelWidth, window._modelHeight, window._scaleDown, window._fullscreen, window._allVisible]);</script>
     <style type="text/css">
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
         body	{
             overflow: hidden;
             margin: 0;
@@ -521,24 +527,26 @@
         .dropdown-button {
             position: relative;
             cursor: pointer;
-            width: 52px;
-            height: 36px;
+            width: 88px;
+            height: 60px;
             transform-origin: 100% 0%;
             -webkit-transform-origin: 100% 0%;
             transform: scale(0.5);
             -webkit-transform: scale(0.5);
             opacity:0.3;
+            min-width: 44px;
+            min-height: 44px;
+            touch-action: manipulation;
         }
         .dropdown-button:hover {
             position: relative;
             cursor: pointer;
-            width: 52px;
-            height: 36px;
+            width: 88px;
+            height: 60px;
             transform-origin: 100% 0%;
             -webkit-transform-origin: 100% 0%;
             transform: scale(0.5);
             -webkit-transform: scale(0.5);
-            /**transition: opacity .5s;**/
             opacity:0.6;
         }
         .dropdown-button:focus{
@@ -622,6 +630,10 @@
             -webkit-transform-origin: 0% 0%;
             transform: scale(0.5);
             -webkit-transform: scale(0.5);
+            min-width: 44px;
+            min-height: 44px;
+            padding: 12px;
+            touch-action: manipulation;
         }
         .buttons-one:hover {
             opacity:0.6;
@@ -632,6 +644,20 @@
         }
         .buttons-one:focus{
             outline: 0;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            .dropdown-button, .buttons-one {
+                min-width: 44px !important;
+                min-height: 44px !important;
+                padding: 12px !important;
+            }
+            
+            .scaleOption, .scaleOptionGroup {
+                font-size: 16px;
+                padding: 8px;
+            }
         }
     </style>
 </head>
@@ -680,6 +706,60 @@
     <input type="image" class="display-board buttons-one" src="./files/mathkit_scripts/images/button_back.png" onclick="history.back();" alt="Назад"/>
     <input type="image" class="display-board buttons-one" src="./files/mathkit_scripts/images/button_reload.png" onclick="document.getElementById('baseHtmlIframe').contentWindow.reloadSheet();" alt="Перезагрузить"/>
 </div>
+
+<script>
+// Mobile touch optimization
+document.addEventListener('DOMContentLoaded', function() {
+    // Add touch events for mobile buttons
+    const mobileButtons = document.querySelectorAll('.dropdown-button, .buttons-one, .scaleOption');
+    
+    mobileButtons.forEach(btn => {
+        // Touch start event
+        btn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.style.opacity = "0.6";
+        }, {passive: false});
+        
+        // Touch end event
+        btn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.style.opacity = "0.3";
+            
+            // Simulate click for buttons with onclick
+            if (this.onclick) {
+                this.onclick();
+            }
+            // For scale options, trigger click
+            else if (this.click) {
+                this.click();
+            }
+        }, {passive: false});
+        
+        // Touch cancel event
+        btn.addEventListener('touchcancel', function(e) {
+            e.preventDefault();
+            this.style.opacity = "0.3";
+        }, {passive: false});
+    });
+    
+    // Prevent double-tap zoom
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, {passive: false});
+    
+    // Improve touch for dropdown menu
+    const scaleOptions = document.querySelectorAll('.scaleOption');
+    scaleOptions.forEach(option => {
+        option.style.cursor = 'pointer';
+        option.style.padding = '8px 12px';
+    });
+});
+</script>
 
 </body>
 </html>
