@@ -34,7 +34,8 @@ export default {
     return {
       lessons: [
         { name: 'Теория вероятности', route: '/test' },
-        { name: 'Построения сечения', route: '/testTwo' }
+        { name: 'Построения сечения', route: '/testTwo' },
+        { name: 'Работа с параметрами', route: '/testTree' }
         //{ name: 'Линейная алгебра', route: '/testThree' }
         // Добавьте другие занятия здесь с соответствующими маршрутами
       ]
