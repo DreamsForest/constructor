@@ -4,7 +4,7 @@
       <table>
         <thead>
           <tr>
-            <th style="padding-right: 20px;">Номер</th>
+            <th style="padding-right: 20px;">Номер урока</th>
             <th style="padding-right: 20px;">Название занятия</th>
             <th style="padding-right: 20px;">Действия</th>
           </tr>
@@ -34,7 +34,7 @@ export default {
     return {
       lessons: [
         { name: 'Теория вероятности', route: '/test' },
-        { name: 'Математический анализ', route: '/testTwo' }
+        { name: 'Построения сечения', route: '/testTwo' }
         //{ name: 'Линейная алгебра', route: '/testThree' }
         // Добавьте другие занятия здесь с соответствующими маршрутами
       ]

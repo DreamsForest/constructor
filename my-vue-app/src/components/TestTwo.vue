@@ -6,7 +6,7 @@
       <div class="lesson-frame">
         <iframe
           ref="lessonIframe"
-          src="/Теория вероятности.html"
+          src="/05-cube.html"
           class="lesson-iframe"
           @load="onIframeLoad"
         ></iframe>
