@@ -523,6 +523,7 @@
             float: right;
             transform-origin: 100% 0%;
             -webkit-transform-origin: 100% 0%;
+            z-index: 1000;
         }
         .dropdown-button {
             position: relative;
@@ -534,9 +535,10 @@
             transform: scale(0.5);
             -webkit-transform: scale(0.5);
             opacity:0.3;
-            min-width: 44px;
-            min-height: 44px;
+            min-width: 50px;
+            min-height: 50px;
             touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .dropdown-button:hover {
             position: relative;
@@ -551,6 +553,10 @@
         }
         .dropdown-button:focus{
             outline: 0;
+        }
+        .dropdown-button:active {
+            opacity: 0.8 !important;
+            transform: scale(0.45) !important;
         }
         .dropdown .dropdown-menu {
             position: absolute;
@@ -567,6 +573,7 @@
         #scaleDropdown{
             background-color: #f0f0f0;
             border: 2px solid #c8c7cc;
+            z-index: 1001;
         }
         .scaleOption{
             width: 250px;
@@ -578,6 +585,11 @@
             pointer:hand;
             font-size:18px;
             font-family:verdana,arial;
+            cursor: pointer;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            min-height: 44px;
         }
         .scaleOptionGroup{
             width: 250px;
@@ -623,6 +635,8 @@
             transform: scale(0.5);
             -webkit-transform: scale(0.5);
             height: 36px;
+            z-index: 1000;
+            position: relative;
         }
         .buttons-one {
             opacity:0.3;
@@ -630,10 +644,11 @@
             -webkit-transform-origin: 0% 0%;
             transform: scale(0.5);
             -webkit-transform: scale(0.5);
-            min-width: 44px;
-            min-height: 44px;
-            padding: 12px;
+            min-width: 50px;
+            min-height: 50px;
+            padding: 15px;
             touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .buttons-one:hover {
             opacity:0.6;
@@ -645,18 +660,28 @@
         .buttons-one:focus{
             outline: 0;
         }
+        .buttons-one:active {
+            opacity: 0.8 !important;
+            transform: scale(0.45) !important;
+        }
 
         /* Mobile optimization */
         @media (max-width: 768px) {
             .dropdown-button, .buttons-one {
-                min-width: 44px !important;
-                min-height: 44px !important;
-                padding: 12px !important;
+                min-width: 50px !important;
+                min-height: 50px !important;
+                padding: 15px !important;
             }
             
             .scaleOption, .scaleOptionGroup {
-                font-size: 16px;
-                padding: 8px;
+                font-size: 18px;
+                padding: 12px 15px;
+                min-height: 44px;
+            }
+            
+            .dropdown, .buttons {
+                z-index: 1000;
+                position: relative;
             }
         }
     </style>
@@ -708,56 +733,127 @@
 </div>
 
 <script>
-// Mobile touch optimization
+// Улучшенная обработка touch-событий для мобильных устройств
 document.addEventListener('DOMContentLoaded', function() {
-    // Add touch events for mobile buttons
-    const mobileButtons = document.querySelectorAll('.dropdown-button, .buttons-one, .scaleOption');
+    // Функция для симуляции клика на touch-устройствах
+    function simulateClick(element) {
+        const event = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+        });
+        element.dispatchEvent(event);
+    }
     
-    mobileButtons.forEach(btn => {
-        // Touch start event
+    // Обработчики для кнопки масштабирования
+    const dropdownButton = document.querySelector('.dropdown-button');
+    if (dropdownButton) {
+        dropdownButton.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.style.opacity = "0.6";
+        }, {passive: false});
+        
+        dropdownButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.style.opacity = "0.3";
+            simulateClick(this);
+        }, {passive: false});
+        
+        dropdownButton.addEventListener('touchcancel', function(e) {
+            e.preventDefault();
+            this.style.opacity = "0.3";
+        }, {passive: false});
+    }
+    
+    // Обработчики для кнопок навигации
+    const controlButtons = document.querySelectorAll('.buttons-one');
+    controlButtons.forEach(btn => {
         btn.addEventListener('touchstart', function(e) {
             e.preventDefault();
             this.style.opacity = "0.6";
         }, {passive: false});
         
-        // Touch end event
         btn.addEventListener('touchend', function(e) {
             e.preventDefault();
             this.style.opacity = "0.3";
             
-            // Simulate click for buttons with onclick
-            if (this.onclick) {
-                this.onclick();
-            }
-            // For scale options, trigger click
-            else if (this.click) {
-                this.click();
+            // Определяем какая кнопка была нажата
+            if (this.classList.contains('display-board')) {
+                if (this.src.includes('button_back')) {
+                    history.back();
+                } else if (this.src.includes('button_reload')) {
+                    const iframe = document.getElementById('baseHtmlIframe');
+                    if (iframe && iframe.contentWindow && iframe.contentWindow.reloadSheet) {
+                        iframe.contentWindow.reloadSheet();
+                    }
+                }
             }
         }, {passive: false});
         
-        // Touch cancel event
         btn.addEventListener('touchcancel', function(e) {
             e.preventDefault();
             this.style.opacity = "0.3";
         }, {passive: false});
     });
     
-    // Prevent double-tap zoom
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', function(event) {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) {
-            event.preventDefault();
-        }
-        lastTouchEnd = now;
-    }, {passive: false});
-    
-    // Improve touch for dropdown menu
+    // Обработчики для опций масштабирования
     const scaleOptions = document.querySelectorAll('.scaleOption');
     scaleOptions.forEach(option => {
+        option.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = "#e0e0e0";
+        }, {passive: false});
+        
+        option.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = "transparent";
+            simulateClick(this);
+        }, {passive: false});
+        
+        option.addEventListener('touchcancel', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = "transparent";
+        }, {passive: false});
+        
+        // Убедимся, что курсор изменяется при наведении
         option.style.cursor = 'pointer';
-        option.style.padding = '8px 12px';
     });
+    
+    // Предотвращаем масштабирование при двойном тапе
+    let lastTap = 0;
+    document.addEventListener('touchend', function(e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 300 && tapLength > 0) {
+            e.preventDefault();
+        }
+        lastTap = currentTime;
+    }, {passive: false});
+    
+    // Улучшаем обработку кликов для выпадающего меню
+    document.addEventListener('touchstart', function(e) {
+        // Закрываем меню при касании вне его
+        const scaleDropdown = document.getElementById('scaleDropdown');
+        if (scaleDropdown && scaleDropdown.style.visibility === 'visible') {
+            if (!e.target.closest('#dropdownWrapper')) {
+                scaleDropdown.style.visibility = 'hidden';
+                _hideChecked();
+            }
+        }
+    }, {passive: false});
+    
+    // Улучшаем доступность для сенсорных устройств
+    if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+        
+        // Увеличиваем область клика для сенсорных устройств
+        const interactiveElements = document.querySelectorAll('button, .scaleOption, .dropdown-button, .buttons-one');
+        interactiveElements.forEach(el => {
+            el.style.minHeight = '44px';
+            el.style.minWidth = '44px';
+            el.style.padding = '12px';
+        });
+    }
 });
 </script>
 

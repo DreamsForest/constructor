@@ -14,7 +14,7 @@
             <td>{{ index + 1 }}</td>
             <td>{{ lesson.name }}</td>
             <td>
-              <router-link to="/test">
+              <router-link :to="lesson.route">
                 <button type="button" class="btn btn-success">
                   Перейти
                 </button>
@@ -33,10 +33,10 @@ export default {
   data() {
     return {
       lessons: [
-        { name: 'Теория вероятности' },
-        { name: 'Математический анализ' },
-        { name: 'Линейная алгебра' }
-        // Добавьте другие занятия здесь
+        { name: 'Теория вероятности', route: '/test' },
+        { name: 'Математический анализ', route: '/testTwo' }
+        //{ name: 'Линейная алгебра', route: '/testThree' }
+        // Добавьте другие занятия здесь с соответствующими маршрутами
       ]
     }
   },
